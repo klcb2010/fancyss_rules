@@ -2,7 +2,7 @@ name: Sync Fork
 
 on:
   schedule:
-    - cron: "10 7 * * *"  # 每天 14:55 (UTC+8) 执行一次
+    - cron: "20 7 * * *"  # 每天 14:55 (UTC+8) 执行一次
   push:
     branches:
       - main
@@ -18,20 +18,30 @@ jobs:
 
       - name: Set up Git
         run: |
-          git config user.name "klcb2010"
-          git config user.email "klcb2010@gmail.com"
+          git config user.name "Your Name"
+          git config user.email "your-email@example.com"
 
       - name: Add Original Repo as Remote
         run: git remote add upstream https://github.com/qxzg/Actions.git
 
       - name: Fetch Upstream Changes
-        run: git fetch upstream
+        run: |
+          git fetch upstream  # 获取 upstream 的所有更新
+          git branch -r  # 查看远程分支
 
-      - name: Merge Upstream Changes
-        run: git merge upstream/main --allow-unrelated-histories -m "Syncing with upstream"
+      - name: Checkout to 3.0 Branch
+        run: git checkout -b 3.0 upstream/3.0  # 检出 upstream 的 3.0 分支
 
-      - name: Push Changes to Fork
-        run: git push origin main
+      - name: Copy 'fancyss_rules' directory from upstream
+        run: |
+          # 从 upstream 的 3.0 分支中拉取 fancyss_rules 目录到当前工作目录
+          git checkout upstream/3.0 -- fancyss_rules
+
+      - name: Commit Changes
+        run: |
+          git add fancyss_rules
+          git commit -m "Syncing fancyss_rules from upstream" || echo "No changes to commit"  # 如果没有更改，则跳过
+          git push origin main  # 将更新推送到自己的 fork
 
       - name: Record Last Sync Time
         run: |
