@@ -2,7 +2,7 @@ name: Sync Fork
 
 on:
   schedule:
-    - cron: "30 14 * * *"  # 每天 14:30 执行一次
+    - cron: "40 14 * * *"  # 每天 14:30 执行一次
   push:
     branches:
       - main  # 当你向主分支推送时触发
@@ -33,10 +33,11 @@ jobs:
         run: git push origin main
 
       - name: Record Last Sync Time
-        run: echo "Last sync: $(date)" > sync_log.txt  # 记录当前时间
-     
+        run: |
+          echo "Last sync: $(date)" > sync_log.txt  # 记录当前时间
+        shell: bash
+
       - name: Commit Sync Log
         run: |
           git add sync_log.txt
-          git commit -m "Update sync log with last sync time"
-          git push origin main
+          git diff --cached --quiet || (git commit -m "Update sync log with last sync time" && git push origin main)
