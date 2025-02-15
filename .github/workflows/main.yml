@@ -2,7 +2,7 @@ name: Sync Fork
 
 on:
   schedule:
-    - cron: "20 7 * * *"  # 每天 14:55 (UTC+8) 执行一次
+    - cron: "55 6 * * *"  # 每天 14:55 (UTC+8) 执行一次
   push:
     branches:
       - main
@@ -29,8 +29,8 @@ jobs:
           git fetch upstream  # 获取 upstream 的所有更新
           git branch -r  # 查看远程分支
 
-      - name: Checkout to 3.0 Branch
-        run: git checkout -b 3.0 upstream/3.0  # 检出 upstream 的 3.0 分支
+      - name: Checkout Upstream/3.0 Branch
+        run: git checkout upstream/3.0  # 直接切换到 upstream 的 3.0 分支
 
       - name: Copy 'fancyss_rules' directory from upstream
         run: |
