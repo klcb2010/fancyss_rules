@@ -1,0 +1,33 @@
+name: Sync Fork
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # 每天执行一次，可以根据需要调整时间
+  push:
+    branches:
+      - main  # 当你向主分支推送时触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Fork
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: |
+          git config user.name "Your Name"
+          git config user.email "your-email@example.com"
+
+      - name: Add Original Repo as Remote
+        run: git remote add upstream https://github.com/原始仓库用户名/仓库名.git
+
+      - name: Fetch Upstream Changes
+        run: git fetch upstream
+
+      - name: Merge Upstream Changes
+        run: git merge upstream/main --allow-unrelated-histories -m "Syncing with upstream"
+
+      - name: Push Changes to Fork
+        run: git push origin main
