@@ -2,10 +2,11 @@ name: Sync Fork
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # 每天执行一次，可以根据需要调整时间
+    - cron: "10 7 * * *"  # 每天 14:55 (UTC+8) 执行一次
   push:
     branches:
-      - main  # 当你向主分支推送时触发
+      - main
+  workflow_dispatch:  # 允许手动触发工作流
 
 jobs:
   sync:
@@ -17,11 +18,11 @@ jobs:
 
       - name: Set up Git
         run: |
-          git config user.name "Your Name"
-          git config user.email "your-email@example.com"
+          git config user.name "klcb2010"
+          git config user.email "klcb2010@gmail.com"
 
       - name: Add Original Repo as Remote
-        run: git remote add upstream https://github.com/原始仓库用户名/仓库名.git
+        run: git remote add upstream https://github.com/qxzg/Actions.git
 
       - name: Fetch Upstream Changes
         run: git fetch upstream
@@ -31,3 +32,13 @@ jobs:
 
       - name: Push Changes to Fork
         run: git push origin main
+
+      - name: Record Last Sync Time
+        run: |
+          echo "Last sync: $(date)" > sync_log.txt  # 记录当前时间
+        shell: bash
+
+      - name: Commit Sync Log
+        run: |
+          git add sync_log.txt
+          git diff --cached --quiet || (git commit -m "Update sync log with last sync time" && git push origin main)
