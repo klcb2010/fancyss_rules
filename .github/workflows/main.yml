@@ -5,7 +5,7 @@ on:
     - cron: "55 6 * * *"  # 每天 14:55 (UTC+8) 执行一次
   push:
     branches:
-      - main
+      - tree  # 使用你的实际分支名
   workflow_dispatch:  # 允许手动触发工作流
 
 jobs:
@@ -29,19 +29,18 @@ jobs:
           git fetch upstream  # 获取 upstream 的所有更新
           git branch -r  # 查看远程分支
 
-      - name: Checkout Upstream/3.0 Branch
-        run: git checkout upstream/3.0  # 直接切换到 upstream 的 3.0 分支
+      - name: Checkout to Tree Branch
+        run: git checkout tree  # 切换到本地的 tree 分支
 
-      - name: Copy 'fancyss_rules' directory from upstream
+      - name: Merge Changes from Upstream/3.0
         run: |
-          # 从 upstream 的 3.0 分支中拉取 fancyss_rules 目录到当前工作目录
-          git checkout upstream/3.0 -- fancyss_rules
-
-      - name: Commit Changes
-        run: |
-          git add fancyss_rules
+          git checkout upstream/3.0 -- fancyss_rules  # 从 upstream/3.0 中提取 fancyss_rules 目录
+          git add fancyss_rules  # 添加变更
           git commit -m "Syncing fancyss_rules from upstream" || echo "No changes to commit"  # 如果没有更改，则跳过
-          git push origin main  # 将更新推送到自己的 fork
+
+      - name: Push Changes to Fork
+        run: |
+          git push origin tree  # 将更改推送到本地的 tree 分支
 
       - name: Record Last Sync Time
         run: |
@@ -51,4 +50,4 @@ jobs:
       - name: Commit Sync Log
         run: |
           git add sync_log.txt
-          git diff --cached --quiet || (git commit -m "Update sync log with last sync time" && git push origin main)
+          git diff --cached --quiet || (git commit -m "Update sync log with last sync time" && git push origin tree)
