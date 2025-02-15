@@ -2,7 +2,7 @@ name: Sync Fork
 
 on:
   schedule:
-    - cron: "38 14 * * *"  # 每天 14:30 执行一次
+    - cron: "40 14 * * *"  # 每天 14:30 执行一次
   push:
     branches:
       - main  # 当你向主分支推送时触发
