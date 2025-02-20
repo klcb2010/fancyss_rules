@@ -2,7 +2,7 @@ name: Sync Fork
 
 on:
   schedule:
-    - cron: "55 6 * * *"  # 每天 14:55 (UTC+8) 执行一次
+    - cron: "45 20 * * *"  # 每天 14:55 (UTC+8) 执行一次
   push:
     branches:
       - 3.0  # 使用你的实际分支名 3.0
